@@ -1,0 +1,35 @@
+* {
+	padding:0;
+	margin:0;
+	font-family: Arial;
+}
+
+
+.todoview {
+	padding:10px;
+	padding-left: 35px;
+	list-style: none;
+	background: url('../img/none.png') no-repeat 10px center;
+}
+
+.done {
+	background: url('../img/done.png') no-repeat 10px center;
+}
+
+.statsview {
+	background-color: #CCC;
+	padding: 10px;
+	margin: 0px;
+	overflow: hidden;
+}
+
+.statsview label {
+	line-height: 30px;
+}
+
+.statsview a {
+	float: right;
+	padding: 4px;border: solid #AAA 2px;
+	margin-left: 10px;
+	cursor: pointer;
+}

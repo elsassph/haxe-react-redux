@@ -1,0 +1,6 @@
+-cp lib
+-cp src
+
+-lib react
+-D react_global
+-D redux_global
