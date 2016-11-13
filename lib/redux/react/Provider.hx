@@ -2,14 +2,13 @@ package redux.react;
 
 import react.React;
 import react.ReactComponent;
-import redux.Store;
+import redux.StoreMethods;
 
 typedef ProvideProps = {
-	store: Store<Dynamic>,
+	store: StoreMethods<Dynamic>,
 	children: ReactElement
 }
 
-@:reactContext
 class Provider extends ReactComponentOfProps<ProvideProps>
 {
 	static public var childContextTypes = {

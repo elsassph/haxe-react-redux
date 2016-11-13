@@ -36,6 +36,13 @@ typedef Middleware = Dynamic;
 typedef StoreListener = Void -> Void;
 typedef Unsubscribe = Void -> Void;
 
+
+/* 
+	Enum based Actions abstraction: 
+	when an Enum is provided where an Action is expected (eg. dispatch),
+	an implicit conversion wraps the Enum value into an ActionPayload.
+*/
+
 typedef ActionPayload = {
 	type:String,
 	?value:Dynamic

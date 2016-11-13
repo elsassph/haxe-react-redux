@@ -1,9 +1,10 @@
 package example.todo.model;
 
 import example.todo.action.TodoAction;
-import haxe.Timer;
+import haxe.Http;
+import haxe.Json;
 import js.Promise;
-import react.ReactUtil.assign;
+import react.ReactUtil.copy;
 import redux.IMiddleware;
 import redux.IReducer;
 import redux.StoreMethods;
@@ -38,8 +39,14 @@ class TodoList
 	{
 		return switch(action)
 		{
+			case Add(text):
+				var newEntry = { id: '${++ID}', text: text, done: false };
+				copy(state, {
+					entries: state.entries.concat([newEntry])
+				});
+				
 			case Toggle(id):
-				assign({}, [state, {
+				copy(state, {
 					entries: [
 						for (todo in state.entries)
 							if (todo.id != id) todo; 
@@ -49,17 +56,12 @@ class TodoList
 								done: !todo.done
 							}
 					]
-				}]);
-				
-			case Add(text):
-				assign({}, [state, {
-					entries: state.entries.concat([{ id: '${++ID}', text: text, done: false }])
-				}]);
+				});
 				
 			case Load:
-				assign({}, [state, {
+				copy(state, {
 					loading: true
-				}]);
+				});
 				
 			case SetEntries(entries):
 				{
@@ -76,12 +78,12 @@ class TodoList
 	
 	/* MIDDLEWARE */
 	
-	public function middleware(store:StoreMethods<ApplicationState>, action:TodoAction, skip:Void -> Dynamic)
+	public function middleware(store:StoreMethods<ApplicationState>, action:TodoAction, next:Void -> Dynamic)
 	{
 		return switch(action)
 		{
 			case Load: loadEntries(store);
-			default: skip();
+			default: next();
 		}
 	}
 	
@@ -91,15 +93,19 @@ class TodoList
 		if (loadPending != null) return loadPending;
 		
 		return loadPending = new Promise(function(resolve, reject) {
-				// simulate async loading
-				Timer.delay(function() {
-					loadPending = null;
-					store.dispatch(TodoAction.SetEntries([
-						{ text:'First one', done:false },
-						{ text:'Second one', done:true }
-					]));
-					resolve(true);
-				}, 1000);
-			});
+			var http = new Http('data/data.json');
+			http.onData = function(data) {
+				loadPending = null;
+				var entries = Json.parse(data).items;
+				store.dispatch(TodoAction.SetEntries(entries));
+				resolve(true);
+			}
+			http.onError = function(error) {
+				loadPending = null;
+				store.dispatch(TodoAction.SetEntries([]));
+				resolve(true);
+			}
+			http.request();
+		});
 	}
 }

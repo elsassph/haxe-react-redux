@@ -26,25 +26,34 @@ class Main
 		setupStore();
 		createViews();
 		
+		// use regular 'store.dispatch' but passing Haxe Enums!
 		store.dispatch(TodoAction.Load)
 			.then(function(_) {
-				store.dispatch(TodoAction.Add('Third (scripted) one'));
-				store.dispatch(TodoAction.Toggle('1'));
+				store.dispatch(TodoAction.Add('Item 5 (auto)'));
+				store.dispatch(TodoAction.Toggle('4'));
 			});
 	}
 	
 	static function setupStore()
 	{
+		// store model, implementing reducer and middleware logic
 		var todoList = new TodoList();
 		
+		// create root reducer normally, excepted you must use 
+		// 'StoreBuilder.mapReducer' to wrap the Enum-based reducer
 		var rootReducer = Redux.combineReducers({
 			todoList: mapReducer(TodoAction, todoList)
 		});
 		
+		// create middleware normally, excepted you must use 
+		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
 		var middleware = Redux.applyMiddleware(
 			mapMiddleware(TodoAction, todoList)
 		);
 		
+		// user 'StoreBuilder.createStore' helper to automatically wire
+		// the Redux devtools browser extension:
+		// https://github.com/zalmoxisus/redux-devtools-extension
 		store = createStore(rootReducer, null, middleware);
 	}
 	

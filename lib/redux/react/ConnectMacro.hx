@@ -5,6 +5,9 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type.ClassType;
 
+/**
+	Modify classes implementing IConnectedComponent to inject the connection logic
+**/
 class ConnectMacro
 {
 	static public function build() 
