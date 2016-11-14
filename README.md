@@ -174,3 +174,10 @@ class TodoListView extends ReactComponentOfState<TodoListState> implements IConn
 	}
 	...
 ```
+
+
+Polyfills for non-modern browsers
+---------------------------------
+
+This project loads `core-js` and `dom4` libraries to polyfill modern JS and DOM features
+(see `index.html`).
