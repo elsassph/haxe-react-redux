@@ -82,8 +82,21 @@ class Stub
 		// process output
 		src = addInjections(refs, indexes, src);
 		src = addJoinPoint(src);
+		src = addRequire(src);
 		
 		File.saveContent(output, src);
+	}
+	
+	/**
+	 * Provide a `require` function which will lookup modules in the shared registry
+	 */
+	static function addRequire(src:String) 
+	{
+		var p = src.indexOf('"use strict"');
+		if (p < 0) return src;
+		return src.substr(0, p + 12)
+			+ '; var require = (function(r){return function require(m){return r[m];}})($$hx_exports.__registry__)'
+			+ src.substr(p + 12);
 	}
 	
 	/**

@@ -1,9 +1,7 @@
 common.hxml
 
-# livereload
--debug
 -D livereload
---macro Stub.modules()
+-debug
 
 --each
 

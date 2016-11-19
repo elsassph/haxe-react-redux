@@ -1,13 +1,11 @@
-Todo App
-============
+# Todo App
 
 This is a simple application demonstrating React+Redux in Haxe. With live-reload.
 
-> This application requires Haxe 3.2.1 or greater
-> and https://github.com/massiveinteractive/haxe-react
+> This application requires NPM and Haxe 3.2.1 or greater
 
-Overview
------------
+
+## Overview
 
 This is a partially implemented Todo application, demonstrating how Haxe macros, enums 
 and abstracts can offer a superior React+Redux integration.
@@ -18,33 +16,62 @@ and abstracts can offer a superior React+Redux integration.
 
 The application is also live-reload capable for fast iteration:
 
-* 2 JS files are created; one with the core app (store), 
+* 2 Haxe-JS bundles are created; one with the core app (store), 
   and one with the React views and their state-mapping logic.
 
+NPM dependencies are bundled into one JS file shared between the Haxe-JS bundles.
 
-Building the app
-----------------
 
-Install libraries:
+### Installation
+
+Install NPM libraries:
+
+	npm install
+
+Install Haxe libraries
 
 	haxelib install react
 
-Compile for live-reload via the hxml file:
+### NPM dependencies
 
-	haxe livereload.hxml
+NPM libraries are referenced in `src/libs.js` - add libraries your Haxe code will need.
 
-Serve with live-reload:
-	
+Compile them into `bin/libs.js` for development:
+
+	npm run libs:dev
+
+### Live-reload
+
+Any LiveReload-compatible client/server should work but the simplest is `livereloadx`:
+
 	npm install -g livereloadx
 	livereloadx -s bin
 
-Release build as a single JS file:
-	
-	haxe build.hxml
+Point your browser to `http://localhost:35729`
+
+Build the Haxe-JS bundles (manually, no watcher): 
+
+	haxe livereload.hxml
+
+That's all - no Webpack dark magic needed.
+
+### Release build
+
+Release build as a single Haxe-JS bundle:
+
+	npm run release
+
+This command does: 
+
+- remove JS/MAP files in `bin/`, 
+- build and minify `libs.js`
+- build and minify `index.js` 
+
+This is obviously a naive setup - you'll probably want to add some SCSS/LESS and 
+assets preprocessors.
 
 
-Application Structure
----------------------
+## Application Structure
 
 The application source contains the following classes:
 
@@ -71,9 +98,15 @@ The application source contains the following classes:
 				TodoListView.hx   // View for TodoList
 				TodoView.hx       // View for individual Todo items
 				TodoStatsView.hx  // Summary of current todo list + button to create new Todo
-	
-Haxe magic
-----------
+
+
+## Polyfills
+
+This project loads (if needed) `core-js` and `dom4` libraries to polyfill modern JS and DOM 
+features (see `index.html`).
+
+
+## Haxe magic
 
 ### Live-reload
 
@@ -174,10 +207,3 @@ class TodoListView extends ReactComponentOfState<TodoListState> implements IConn
 	}
 	...
 ```
-
-
-Polyfills for non-modern browsers
----------------------------------
-
-This project loads `core-js` and `dom4` libraries to polyfill modern JS and DOM features
-(see `index.html`).

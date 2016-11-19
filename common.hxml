@@ -1,6 +1,6 @@
+-lib react
+
 -cp lib
 -cp src
 
--lib react
--D react_global
--D redux_global
+--macro Stub.modules()
