@@ -40,6 +40,8 @@ Compile them into `bin/libs.js` for development:
 
 	npm run libs:dev
 
+See [Adding NPM dependencies](#adding-npm-dependencies) for a detailed process.
+
 ### Live-reload
 
 Any LiveReload-compatible client/server should work but the simplest is `livereloadx`:
@@ -63,7 +65,7 @@ Release build as a single Haxe-JS bundle:
 
 This command does: 
 
-- remove JS/MAP files in `bin/`, 
+- remove JS/MAP files in `bin/`
 - build and minify `libs.js`
 - build and minify `index.js` 
 
@@ -78,9 +80,9 @@ The application source contains the following classes:
 ### /lib
 
 	Require.hx     // Lazy loading and live-reload of Haxe-JS modules
-    Stub.hx        // Build macro to export modular Haxe-JS 
+	Stub.hx        // Build macro to export modular Haxe-JS 
 
-    /redux         // Haxe Redux support
+	/redux         // Haxe Redux support
 		/react     // Haxe React-Redux support
  
 ### /src
@@ -206,4 +208,80 @@ class TodoListView extends ReactComponentOfState<TodoListState> implements IConn
 		dispatch(TodoAction.Add('A new task'));
 	}
 	...
+```
+
+## Adding NPM dependencies
+
+Here's an example, adding React Perf add-on:
+
+#### Install the depency:
+
+	npm install react-addons-perf --save
+
+#### Update registry in `src/libs.js`:
+
+```javascript
+// 
+// npm dependencies library
+//
+(function(scope) {
+	'use-strict';
+	scope.__registry__ = Object.assign({}, scope.__registry__, {
+		
+		// list npm modules required in Haxe
+		
+		'react': require('react'),
+		'react-dom': require('react-dom'),
+		'redux': require('redux'),
+		// new module:
+		'react-addons-perf': require('react-addons-perf'),
+		
+	});
+})(typeof $hx_scope != "undefined" ? $hx_scope : $hx_scope = {});
+```
+
+Rebuild `lib.js`:
+
+	npm run libs:dev
+
+#### Create externs if none exist: 
+
+Regular externs using `@:jsRequire` will work out of the box. 
+To create new externs follow the normal procedure: https://haxe.org/manual/target-javascript-require.html
+
+```haxe
+@:jsRequire('react-addons-perf')
+extern class Perf
+{
+	static public function start():Void;
+	static public function stop():Void;
+	static public function getLastMeasurements():PerfMeasurements;
+	static public function printInclusive(measurements:PerfMeasurements):Void;
+	static public function printExclusive(measurements:PerfMeasurements):Void;
+	static public function printWasted(measurements:PerfMeasurements):Void;
+	static public function printOperations(measurements:PerfMeasurements):Void;
+}
+
+typedef PerfMeasurements = Dynamic;
+```
+
+#### Use in your code:
+
+Here's for example how to measure the main render action.
+
+```haxe
+	static function render(?_) 
+	{
+		Perf.start();
+		
+		ReactDOM.render(jsx('
+			<Provider store=$store>
+				<TodoListView/>
+			</Provider>
+		'), root);
+		
+		Perf.stop();
+		var measurements = Perf.getLastMeasurements();
+		Perf.printInclusive(measurements);
+	}
 ```
