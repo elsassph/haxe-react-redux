@@ -64,7 +64,7 @@ class Main
 		doc.body.appendChild(root);
 		
 		#if livereload
-		Require.module('view', false).then(render);
+		Require.module('view').then(render);
 		Require.hot(render);
 		#else
 		render(); // non-hot

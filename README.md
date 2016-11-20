@@ -16,6 +16,7 @@ and abstracts can offer a superior React+Redux integration.
 
 The application is also live-reload capable for fast iteration:
 
+* read carefully: https://github.com/elsassph/haxe-modular
 * 2 Haxe-JS bundles are created; one with the core app (store), 
   and one with the React views and their state-mapping logic.
 

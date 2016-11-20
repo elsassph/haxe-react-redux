@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "libs": "cross-env NODE_ENV=production browserify src/libs.js | uglifyjs -c > bin/libs.js",
-    "libs:dev": "browserify src/libs.js -o bin/libs.js -d",
+    "libs:dev": "cross-env NODE_ENV=development browserify src/libs.js -o bin/libs.js -d",
     "livereload": "haxe livereload.hxml -debug",
     "build": "haxe build.hxml",
     "minify": "uglifyjs -c -- bin/index.js > bin/index.min.js && shx mv bin/index.min.js bin/index.js",
