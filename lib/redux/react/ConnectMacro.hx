@@ -12,9 +12,6 @@ class ConnectMacro
 {
 	static public function build() 
 	{
-		var type:ClassType = Context.getLocalClass().get();
-		type.meta.add(':expose', [], Context.currentPos());
-		
 		var fields = Context.getBuildFields();
 		
 		// wire 'store' in context

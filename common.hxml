@@ -1,7 +1,0 @@
--lib modular
--lib react
-
--cp lib
--cp src
-
---macro Stub.modules()

@@ -1,5 +1,13 @@
-common.hxml
+-lib modular
+-lib react
 
-# single JS release output
+-cp lib
+-cp src
+
+-D react_hot
+
 -js bin/index.js
 -main Main
+
+#--times
+#-D macro-times

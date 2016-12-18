@@ -8,17 +8,16 @@ This is a simple application demonstrating React+Redux in Haxe. With live-reload
 ## Overview
 
 This is a partially implemented Todo application, demonstrating how Haxe macros, enums 
-and abstracts can offer a superior React+Redux integration.
+and abstracts can offer a superior React+Router+Redux integration.
 
 * Strongly-typed Enums are used both to dispatch and to match actions,
 * Reducers and middlewares are setup to receive a specific Enum type,
-* React-redux connection is generated using macros.
+* React-redux connection is generated using macros,
+* Automatic code splitting by route.
 
 The application is also live-reload capable for fast iteration:
 
 * read carefully: https://github.com/elsassph/haxe-modular
-* 2 Haxe-JS bundles are created; one with the core app (store), 
-  and one with the React views and their state-mapping logic.
 
 NPM dependencies are bundled into one JS file shared between the Haxe-JS bundles.
 
@@ -52,9 +51,9 @@ Any LiveReload-compatible client/server should work but the simplest is `liverel
 
 Point your browser to `http://localhost:35729`
 
-Build the Haxe-JS bundles (manually, no watcher): 
+(re)Build the Haxe-JS for hot-reload: 
 
-	haxe livereload.hxml
+	haxe build.hxml -debug
 
 That's all - no Webpack dark magic needed.
 
@@ -80,15 +79,13 @@ The application source contains the following classes:
 
 ### /lib
 
-	Require.hx     // Lazy loading and live-reload of Haxe-JS modules
-	Stub.hx        // Build macro to export modular Haxe-JS 
-
 	/redux         // Haxe Redux support
 		/react     // Haxe React-Redux support
  
 ### /src
 
-	Main.hx                       // Main entry point: setup store and react render
+	Main.hx                       // Main entry point: setup and react render
+	ApplicationStore.hx           // Setup of redux store
 	ApplicationState.hx           // Interface of the redux state
 
 	/example
@@ -101,6 +98,7 @@ The application source contains the following classes:
 				TodoListView.hx   // View for TodoList
 				TodoView.hx       // View for individual Todo items
 				TodoStatsView.hx  // Summary of current todo list + button to create new Todo
+				AboutView.hx      // View for About screen
 
 
 ## Polyfills
@@ -111,13 +109,41 @@ features (see `index.html`).
 
 ## Haxe magic
 
-### Live-reload
+### Code splitting and live-reload
 
 Live-reload is implemented very simply, just using the "off the shelf" LiveReload servers and 
 client libraries. LiveReload client API offers hooks to be notified of local file changes.
 
-Haxe JS code-splitting is based on https://github.com/elsassph/modular-haxe-example
+Haxe JS code-splitting is based on https://github.com/elsassph/modular-haxe-example and 
+leverages [react-proxy](https://github.com/gaearon/react-proxy/tree/master) for live-reload
+without state loss.
 
+The entire setup of splitting by "route" and live-reload can be seen in the 
+main `render` function which directly references the React component classes:
+
+```haxe
+static function render() 
+{
+	var history = ReactRouter.browserHistory;
+	
+	var app = ReactDOM.render(jsx('
+	
+		<Provider store=$store>
+			<Router history=$history>
+				<Route path="/" component=$pageWrapper>
+					<IndexRoute getComponent=${RouteBundle.load(TodoListView)}/>
+					<Route path="about" getComponent=${RouteBundle.load(AboutView)}/>
+				</Route>
+			</Router>
+		</Provider>
+		
+	'), root);
+	
+	#if (debug && react_hot)
+	ReactHMR.autoRefresh(app);
+	#end
+}
+```
 
 ### Dispatch
 
@@ -238,6 +264,12 @@ Here's an example, adding React Perf add-on:
 		'react-addons-perf': require('react-addons-perf'),
 		
 	});
+	
+	if (process.env.NODE_ENV !== 'production') {
+		// enable hot-reload
+		require('haxe-modular');
+	}
+
 })(typeof $hx_scope != "undefined" ? $hx_scope : $hx_scope = {});
 ```
 
@@ -271,7 +303,7 @@ typedef PerfMeasurements = Dynamic;
 Here's for example how to measure the main render action.
 
 ```haxe
-	static function render(?_) 
+	static function render() 
 	{
 		Perf.start();
 		
