@@ -46,8 +46,7 @@ See [Adding NPM dependencies](#adding-npm-dependencies) for a detailed process.
 
 Any LiveReload-compatible client/server should work but the simplest is `livereloadx`:
 
-	npm install -g livereloadx
-	livereloadx -s bin
+	npm run serve
 
 Point your browser to `http://localhost:35729`
 
