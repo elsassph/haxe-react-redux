@@ -116,7 +116,7 @@ features (see `index.html`).
 Live-reload is implemented very simply, just using the "off the shelf" LiveReload servers and 
 client libraries. LiveReload client API offers hooks to be notified of local file changes.
 
-Haxe JS code-splitting is based on https://github.com/elsassph/modular-haxe-example and 
+Haxe JS code-splitting is based on https://github.com/elsassph/haxe-modular and 
 leverages [react-proxy](https://github.com/gaearon/react-proxy/tree/master) for live-reload
 without state loss.
 
