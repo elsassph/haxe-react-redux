@@ -3,7 +3,6 @@
 -lib react-router
 -lib redux
 
--cp lib
 -cp src
 
 -D react_hot

@@ -84,11 +84,6 @@ assets preprocessors.
 
 The application source contains the following classes:
 
-### /lib
-
-	/redux         // Haxe Redux support
-		/react     // Haxe React-Redux support
- 
 ### /src
 
 	Main.hx                       // Main entry point: setup and react render
