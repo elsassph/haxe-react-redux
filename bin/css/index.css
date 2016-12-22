@@ -4,6 +4,22 @@
 	font-family: Arial;
 }
 
+nav {
+	padding: 10px;
+	border-bottom: solid 1px #aaa;
+}
+
+.about {
+	padding: 10px;
+}
+.about p {
+	padding: 8px 0;
+}
+.about button {
+	font-size: 18px;
+	padding: 8px;
+}
+
 
 .todoview {
 	padding:10px;
@@ -17,7 +33,7 @@
 }
 
 .statsview {
-	background-color: #CCC;
+	background: #eee;
 	padding: 10px;
 	margin: 0px;
 	overflow: hidden;

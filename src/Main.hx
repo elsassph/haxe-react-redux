@@ -1,14 +1,14 @@
-import example.todo.action.TodoAction;
-import example.todo.model.TodoList;
+import example.todo.view.AboutView;
 import example.todo.view.TodoListView;
 import js.Browser;
 import js.html.DivElement;
 import react.ReactDOM;
 import react.ReactMacro.jsx;
-import redux.Redux;
 import redux.Store;
-import redux.StoreBuilder.*;
 import redux.react.Provider;
+import router.Link;
+import router.ReactRouter;
+import router.RouteComponentProps;
 
 class Main
 {
@@ -23,38 +23,11 @@ class Main
 	**/
 	public static function main()
 	{
-		setupStore();
+		store = ApplicationStore.create();
+		
 		createViews();
 		
-		// use regular 'store.dispatch' but passing Haxe Enums!
-		store.dispatch(TodoAction.Load)
-			.then(function(_) {
-				store.dispatch(TodoAction.Add('Item 5 (auto)'));
-				store.dispatch(TodoAction.Toggle('4'));
-			});
-	}
-	
-	static function setupStore()
-	{
-		// store model, implementing reducer and middleware logic
-		var todoList = new TodoList();
-		
-		// create root reducer normally, excepted you must use 
-		// 'StoreBuilder.mapReducer' to wrap the Enum-based reducer
-		var rootReducer = Redux.combineReducers({
-			todoList: mapReducer(TodoAction, todoList)
-		});
-		
-		// create middleware normally, excepted you must use 
-		// 'StoreBuilder.mapMiddleware' to wrap the Enum-based middleware
-		var middleware = Redux.applyMiddleware(
-			mapMiddleware(TodoAction, todoList)
-		);
-		
-		// user 'StoreBuilder.createStore' helper to automatically wire
-		// the Redux devtools browser extension:
-		// https://github.com/zalmoxisus/redux-devtools-extension
-		store = createStore(rootReducer, null, middleware);
+		ApplicationStore.startup(store);
 	}
 	
 	static function createViews()
@@ -63,20 +36,40 @@ class Main
 		root = doc.createDivElement();
 		doc.body.appendChild(root);
 		
-		#if livereload
-		Require.module('view').then(render);
-		Require.hot(render);
-		#else
-		render(); // non-hot
+		render();
+	}
+	
+	static function render() 
+	{
+		var history = ReactRouter.browserHistory;
+		
+		var app = ReactDOM.render(jsx('
+		
+			<Provider store=$store>
+				<Router history=$history>
+					<Route path="/" component=$pageWrapper>
+						<IndexRoute getComponent=${RouteBundle.load(TodoListView)}/>
+						<Route path="about" getComponent=${RouteBundle.load(AboutView)}/>
+					</Route>
+				</Router>
+			</Provider>
+			
+		'), root);
+		
+		#if (debug && react_hot)
+		ReactHMR.autoRefresh(app);
 		#end
 	}
 	
-	static function render(?_) 
+	static function pageWrapper(props:RouteComponentProps)
 	{
-		ReactDOM.render(jsx('
-			<Provider store=$store>
-				<TodoListView/>
-			</Provider>
-		'), root);
+		return jsx('
+			<div>
+				<nav>
+					<Link to="/">Todo</Link> | <Link to="/about">About</Link> 
+				</nav>
+				${props.children}
+			</div>
+		');
 	}
 }

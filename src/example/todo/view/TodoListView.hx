@@ -5,17 +5,20 @@ import example.todo.model.TodoList;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
 import redux.react.IConnectedComponent;
+import router.RouteComponentProps;
 
 typedef TodoListState = {
 	?message: String,
 	?list: Array<TodoState>
 }
 
-class TodoListView extends ReactComponentOfState<TodoListState> implements IConnectedComponent
+class TodoListView 
+	extends ReactComponentOfPropsAndState<RouteComponentProps, TodoListState> 
+	implements IConnectedComponent
 {
-	public function new()
+	public function new(props:RouteComponentProps)
 	{
-		super();
+		super(props);
 	}
 	
 	function mapState(state:ApplicationState)
