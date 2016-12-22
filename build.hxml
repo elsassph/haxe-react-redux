@@ -1,5 +1,7 @@
 -lib modular
 -lib react
+-lib react-router
+-lib redux
 
 -cp lib
 -cp src

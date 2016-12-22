@@ -31,6 +31,14 @@ Install NPM libraries:
 Install Haxe libraries
 
 	haxelib install react
+	haxelib install react-router
+	haxelib install redux
+
+For more information:
+
+- https://github.com/massiveinteractive/haxe-react
+- https://github.com/elsassph/haxe-react-router
+- https://github.com/elsassph/haxe-redux
 
 ### NPM dependencies
 
