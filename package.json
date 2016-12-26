@@ -15,7 +15,7 @@
   "author": "Philippe Elsass",
   "license": "ISC",
   "dependencies": {
-    "haxe-modular": "^0.1.1",
+    "haxe-modular": "^0.1.2",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
     "react-router": "^3.0.0",
