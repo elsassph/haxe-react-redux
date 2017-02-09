@@ -21,7 +21,7 @@ class TodoListView
 		super(props);
 	}
 	
-	function mapState(state:ApplicationState)
+	function mapState(state:ApplicationState, props:RouteComponentProps)
 	{
 		var todoList = state.todoList;
 		var entries = todoList.entries;
@@ -29,7 +29,7 @@ class TodoListView
 			todoList.loading 
 			? 'Loading...'
 			: entries.length == 0
-			  ? 'No items'
+			  ? 'No item'
 			  : '${getRemaining(entries)} remaining of ${entries.length} items to complete';
 		
 		return {

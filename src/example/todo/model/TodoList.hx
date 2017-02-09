@@ -25,6 +25,7 @@ class TodoList
 	implements IMiddleware<TodoAction, ApplicationState>
 {
 	public var initState:TodoListState = { loading:false, entries:[] };
+	public var store:StoreMethods<ApplicationState>;
 	
 	var ID = 0;
 	var loadPending:Promise<Bool>;
@@ -78,16 +79,16 @@ class TodoList
 	
 	/* MIDDLEWARE */
 	
-	public function middleware(store:StoreMethods<ApplicationState>, action:TodoAction, next:Void -> Dynamic)
+	public function middleware(action:TodoAction, next:Void -> Dynamic)
 	{
 		return switch(action)
 		{
-			case Load: loadEntries(store);
+			case Load: loadEntries();
 			default: next();
 		}
 	}
 	
-	function loadEntries(store:StoreMethods<ApplicationState>):Promise<Bool>
+	function loadEntries():Promise<Bool>
 	{
 		// guard for multiple requests
 		if (loadPending != null) return loadPending;
