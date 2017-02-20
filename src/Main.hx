@@ -12,9 +12,6 @@ import router.RouteComponentProps;
 
 class Main
 {
-	static var store:Store<ApplicationState>;
-	static var root:DivElement;
-	
 	/**
 		Entry point:
 		- setup redux store
@@ -23,23 +20,21 @@ class Main
 	**/
 	public static function main()
 	{
-		store = ApplicationStore.create();
-		
-		createViews();
-		
+		var store = ApplicationStore.create();
+		var root = createRoot();
+		render(root, store);
+
 		ApplicationStore.startup(store);
 	}
 	
-	static function createViews()
+	static function createRoot()
 	{
-		var doc = Browser.document;
-		root = doc.createDivElement();
-		doc.body.appendChild(root);
-		
-		render();
+		var root = Browser.document.createDivElement();
+		Browser.document.body.appendChild(root);
+		return root;
 	}
 	
-	static function render() 
+	static function render(root:DivElement, store:Store<ApplicationState>) 
 	{
 		var history = ReactRouter.browserHistory;
 		
