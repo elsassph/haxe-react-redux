@@ -9,13 +9,13 @@ nav {
 	border-bottom: solid 1px #aaa;
 }
 
-.about {
+.about-content {
 	padding: 10px;
 }
-.about p {
+.about-content p {
 	padding: 8px 0;
 }
-.about button {
+.about-content button {
 	font-size: 18px;
 	padding: 8px;
 }
@@ -48,4 +48,36 @@ nav {
 	padding: 4px;border: solid #AAA 2px;
 	margin-left: 10px;
 	cursor: pointer;
+}
+
+.filterview {
+	padding: 8px;
+}
+
+.filterview li {
+	display: inline-block;
+	padding: 0 8px;
+	border-left: solid 1px #999;
+	cursor: pointer;
+}
+
+.filterview li:first-child {
+	border: none;
+}
+.filterview li.selected {
+	font-weight: bold;
+}
+
+footer {
+	border-top: 1px solid #aaa;
+	background: #eee;
+	padding: 16px;
+	color: #aaa;
+	line-height: 32px;
+}
+.footer-logo {
+	float: left;
+	width: 32px;
+	height: 32px;
+	margin-right: 10px;
 }

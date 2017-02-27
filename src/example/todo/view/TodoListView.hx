@@ -4,67 +4,61 @@ import example.todo.action.TodoAction;
 import example.todo.model.TodoList;
 import react.ReactComponent;
 import react.ReactMacro.jsx;
-import redux.react.IConnectedComponent;
-import router.RouteComponentProps;
+import redux.Redux.Dispatch;
 
-typedef TodoListState = {
-	?message: String,
-	?list: Array<TodoState>
+typedef TodoListProps = {
+	message: String,
+	list: Array<TodoState>,
+	filter: FilterOption,
+	?dispatch: Dispatch
 }
 
-class TodoListView 
-	extends ReactComponentOfPropsAndState<RouteComponentProps, TodoListState> 
-	implements IConnectedComponent
+/**
+ * View receives new lists and enough information to compute the visible items.
+ * Also although this view needs `dispatch` we avoid connecting it and instead
+ * pass `dispatch` in the props.
+ */
+class TodoListView
+	extends ReactComponentOfProps<TodoListProps>
 {
-	public function new(props:RouteComponentProps)
-	{
-		super(props);
-	}
-	
-	function mapState(state:ApplicationState, props:RouteComponentProps)
-	{
-		var todoList = state.todoList;
-		var entries = todoList.entries;
-		var message = 
-			todoList.loading 
-			? 'Loading...'
-			: entries.length == 0
-			  ? 'No item'
-			  : '${getRemaining(entries)} remaining of ${entries.length} items to complete';
-		
-		return {
-			message: message,
-			list: entries
-		}
-	}
-	
-	function getRemaining(entries:Array<TodoState>)
-	{
-		return entries.filter(function(todo) return !todo.done).length;
-	}
-	
-	override public function render() 
+	override public function render()
 	{
 		return jsx('
 			<div>
-				<TodoStatsView message=${state.message} addNew=$addNew/>
+				<TodoStatsView message=${props.message} addNew=$addNew/>
 				<hr/>
 				<ul>
 					${renderList()}
 				</ul>
+				<hr/>
+				<TodoFilterView/>
+				<Footer/>
 			</div>
 		');
 	}
-	
-	function addNew() 
+
+	function addNew()
 	{
-		dispatch(TodoAction.Add('A new task'));
+		props.dispatch(TodoAction.Add('A new task'));
 	}
-	
+
 	function renderList()
 	{
-		return [for (todo in state.list)
+		var list = applyFilter(props.list, props.filter);
+
+		return [for (todo in list)
 			jsx('<TodoView key=${todo.id} todo=$todo/>')
 		];
+	}
+
+	function applyFilter(entries:Array<TodoState>, filter:FilterOption)
+	{
+		return switch(filter) {
+			case FilterOption.All: entries;
+			case FilterOption.Completed:
+				entries.filter(function(entry) return entry.done);
+			case FilterOption.Remaining:
+				entries.filter(function(entry) return !entry.done);
+		}
 	}
 }
