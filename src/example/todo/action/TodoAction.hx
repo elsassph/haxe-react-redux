@@ -9,6 +9,7 @@ enum TodoAction
 {
 	Add(text:String);
 	Toggle(id:String);
+	SetFilter(filter:FilterOption);
 	Load;
 	SetEntries(entries:Array<TodoState>);
 }
