@@ -1,9 +1,13 @@
 package example.todo.model;
 
+#if (haxe_ver >= 4)
+import js.lib.Promise;
+#else
+import js.Promise;
+#end
 import example.todo.action.TodoAction;
 import haxe.Http;
 import haxe.Json;
-import js.Promise;
 import react.ReactUtil.copy;
 import redux.IMiddleware;
 import redux.IReducer;
