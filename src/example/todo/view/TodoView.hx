@@ -19,28 +19,28 @@ class TodoView extends ReactComponentOfProps<TodoProps> implements IConnectedCom
 	override public function render()
 	{
 		var className = 'actionable todoview ' + (props.todo.done ? 'done' : '');
-		
+
 		// random bg color to show re-renders
 		var r = Math.floor(Math.random() * 0x33) + 0xcc;
 		var g = Math.floor(Math.random() * 0x33) + 0xcc;
 		var b = Math.floor(Math.random() * 0x33) + 0xcc;
 		var style = { backgroundColor:'rgb($r,$g,$b)' };
-		
+
 		return jsx('
 			<li className=$className onClick=$onClick tabIndex="0" style=$style>
 				${props.todo.text}
 			</li>
 		');
 	}
-	
-	override public function shouldComponentUpdate(nextProps:TodoProps, nextState:Dynamic):Bool 
+
+	override function shouldComponentUpdate(nextProps:TodoProps, nextState:{}):Bool
 	{
-		// only re-render if the todo object is a different instance 
+		// only re-render if the todo object is a different instance
 		// because updates follow immutability rules
 		return nextProps.todo != props.todo;
 	}
-	
-	function onClick(_) 
+
+	function onClick(_)
 	{
 		dispatch(TodoAction.Toggle(props.todo.id));
 	}
